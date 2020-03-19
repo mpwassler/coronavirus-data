@@ -14,6 +14,13 @@ if len(sys.argv) > 1:
 else:
 	country = "USA"
 
+if len(sys.argv) > 2:
+	state = sys.argv[2]
+	mode = "state"
+else:
+	state = ""
+	mode = "region"
+
 def read_directory():
 	return ["data/" + f for f in listdir(data_folder) if isfile(join(data_folder, f))]
 
@@ -112,6 +119,7 @@ def print_results_table(data):
 
 
 def draw_growth_plot(data):
+	title = "Percentage of spread in " + country + " " +  state
 	data = case_number_at_least(20, data)
 	recovered =             [ row["recovered"]             for row in data ]
 	percent_new_cases =     [ row["percent_new_cases"]     for row in data ]
@@ -124,10 +132,11 @@ def draw_growth_plot(data):
 	plt.legend()
 	plt.xlabel("Days (of at least 20 cases)")
 	plt.ylabel("Percentage increase over previous day")
-	plt.title("Percentage of spread in " + country)
+	plt.title(title)
 	plt.savefig('charts/growth_rate.png')
 
 def draw_totals_plot(data):
+	title = "Totals in " + country + " " +  state
 	data = case_number_at_least(20, data)
 	cases =                 [ row["cases"]                 for row in data ]
 	deaths =                [ row["deaths"]                for row in data ]
@@ -138,16 +147,22 @@ def draw_totals_plot(data):
 	plt.plot( range(len(data)), recovered, 'g:', label='Recoverd' )
 	plt.legend()
 	plt.xlabel("Days (of at least 20 cases)")
-	plt.ylabel("Percentage increase over previous day")
-	plt.title("Percentage of spread in " + country)
+	plt.ylabel("Totals")
+
+	plt.title(title)
 	plt.savefig('charts/totals.png')
 
 	
 
 # load_date()
 data = load_data()
-data_by_local = data_sorted_by("region", data)
-region_totals = totals_for_region(data_by_local[country])
+if mode == "state":
+	data_by_local = data_sorted_by("local", data)
+	region_totals = totals_for_region(data_by_local[state])
+else:
+	data_by_local = data_sorted_by("region", data)
+	region_totals = totals_for_region(data_by_local[country])
+
 print_results_table(region_totals)
 draw_growth_plot(region_totals)
 draw_totals_plot(region_totals)

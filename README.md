@@ -15,6 +15,8 @@ Will defualt to USA. You can run for other countries by passing them as a parami
 
 Run with `docker-compose run app python app.py "Mainland China"`
 
+It supports states / sub regions by adding them after the country like `docker-compose run app python app.py "USA" "New York"`
+
 Will print a table like
 ```
 +------------+-------+-----------+--------+------------+-----------+---------------+
