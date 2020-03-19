@@ -1,4 +1,9 @@
-Playing around with some coronavirus data from [ourworldindata](https://ourworldindata.org/coronavirus)
+# Playing around with some coronavirus data.
+## Inspiration and resources
+[ourworldindata](https://ourworldindata.org/coronavirus)
+
+[ncov.bii.virginia.edu](http://ncov.bii.virginia.edu/dashboard)
+## App
 
 Build with `docker-compose build app`
 
