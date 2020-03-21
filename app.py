@@ -77,14 +77,15 @@ def calulate_results_for_day(data, date, previous_day_data):
 		percent_new_deaths = 0
 		percent_new_recovered = 0
 	return {
-			"date"                  : date,
-			"cases"                 : cases,
-			"deaths"                : deaths,
-			"recovered"             : recovered,
-			"percent_new_cases"     : previous_day_cases,
-			"percent_new_deaths"    : percent_new_deaths,
-			"percent_new_recovered" : percent_new_recovered,
-			}
+		"date"                  : date,
+		"cases"                 : cases,
+		"deaths"                : deaths,
+		"recovered"             : recovered,
+		"percent_new_cases"     : previous_day_cases,
+		"percent_new_deaths"    : percent_new_deaths,
+		"percent_new_recovered" : percent_new_recovered,
+		"case_fatality"         : round((deaths / cases) * 100, 4)
+	}
 
 def totals_for_region(region_data):
 	totals = []
@@ -105,7 +106,7 @@ def case_number_at_least(amount, data):
 
 def print_results_table(data):
 	data = case_number_at_least(20, data)
-	output_headers = ["Date", "Cases", "Cases % ^", "Deaths", "Deaths % ^", "Recovered", "Recovered % ^" ]
+	output_headers = ["Date", "Cases", "Cases % ^", "Deaths", "Deaths % ^", "Recovered", "Recovered % ^", "Case Fatality Rate" ]
 	formatter = PrettyTable(output_headers)
 	for daily_cases in data:
 		formatter.add_row([ daily_cases["date"], 
@@ -114,7 +115,8 @@ def print_results_table(data):
 			                daily_cases["deaths"],
 			                daily_cases["percent_new_deaths"],
 			                daily_cases["recovered"],
-			                daily_cases["percent_new_recovered"] ])
+			                daily_cases["percent_new_recovered"],
+			                daily_cases["case_fatality"] ])
 	print(formatter)
 
 
@@ -124,11 +126,11 @@ def draw_growth_plot(data):
 	recovered =             [ row["recovered"]             for row in data ]
 	percent_new_cases =     [ row["percent_new_cases"]     for row in data ]
 	percent_new_deaths =    [ row["percent_new_deaths"]    for row in data ]
-	percent_new_recovered = [ row["percent_new_recovered"] for row in data ]
+	case_fatality =         [ row["case_fatality"]         for row in data ]
 	plt.figure()
 	plt.plot( range(len(data)), percent_new_cases, 'b-',     label='Cases', linewidth=2 )
 	plt.plot( range(len(data)), percent_new_deaths, 'r--',   label='Deaths' )	
-	plt.plot( range(len(data)), percent_new_recovered, 'g:', label='Recoverd' )
+	plt.plot( range(len(data)), case_fatality, 'm:',  label='Case Fatality Rate' )
 	plt.legend()
 	plt.xlabel("Days (of at least 20 cases)")
 	plt.ylabel("Percentage increase over previous day")
@@ -142,9 +144,9 @@ def draw_totals_plot(data):
 	deaths =                [ row["deaths"]                for row in data ]
 	recovered =             [ row["recovered"]             for row in data ]
 	plt.figure()
-	plt.plot( range(len(data)), cases, 'b-',     label='Cases', linewidth=2 )
-	plt.plot( range(len(data)), deaths, 'r--',   label='Deaths' )	
-	plt.plot( range(len(data)), recovered, 'g:', label='Recoverd' )
+	plt.plot( range(len(data)), cases,     'b-',  label='Cases', linewidth=2 )
+	plt.plot( range(len(data)), deaths,    'r--', label='Deaths' )	
+	plt.plot( range(len(data)), recovered, 'g:',  label='Recoverd' )
 	plt.legend()
 	plt.xlabel("Days (of at least 20 cases)")
 	plt.ylabel("Totals")
