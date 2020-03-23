@@ -25,6 +25,8 @@ def set_up_data_folder():
 		os.makedirs(dir_name)
 
 def write_file(data, date):
+	if not data:
+		return
 	filename = "nssac-ncov-sd-{date}.csv".format(date=date)
 	f = open("data/" + filename, "w")
 	f.write(data)
